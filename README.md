@@ -104,7 +104,7 @@ pkg install sqlite
 
 ### 3. Create a Simple Go Server
 
-Navigate to your Go workspace and create a directory for your project:
+Navigate to your Go workspace and create a directory for your project: (make sure you create diretory in termux home directory i.e. ~/. other than that will create error in go mode tidy step)
 
 ```sh
 mkdir -p ~/go/src/myapp
