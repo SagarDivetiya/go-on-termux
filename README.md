@@ -1,4 +1,8 @@
 # go-on-termux
+
+## Termux installation using apk link on GitHub
+https://github.com/termux/termux-app/releases/tag/v0.118.1
+
 Running Go code on Termux is possible by installing the Go programming language on Termux and then compiling and running your Go code. Here's a step-by-step guide:
 
 ### 1. Install Go on Termux
