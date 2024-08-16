@@ -91,6 +91,7 @@ Ensure that your Termux environment is up to date:
 ```sh
 pkg update
 pkg upgrade
+termux-setup-storage
 ```
 
 ### 2. Install Go and SQLite
