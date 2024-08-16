@@ -93,6 +93,7 @@ pkg update
 pkg upgrade
 termux-setup-storage
 ```
+Note: if using Acode (download from F-droid or https://github.com/deadlyjack/Acode ) for code editing open folder in 'External Storage' section. (permissions may be required)
 
 ### 2. Install Go and SQLite
 
@@ -449,6 +450,6 @@ Replace username with your GitHub username and repository with your repository n
 ```bash
 git add .
 git commit -m "comment"
-git push origin
+git push origin main
 ```
-mainSince SSH keys are used, you won’t be prompted for a password.
+Since SSH keys are used, you won’t be prompted for a password.
