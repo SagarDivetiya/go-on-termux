@@ -13,6 +13,7 @@ pkg update
 pkg upgrade
 pkg install golang
 ```
+Note: sometimes 'pkg' may not work, use 'apt' instead for all the commands.
 
 ### 2. Verify the Installation
 After installation, you can verify that Go is installed by checking the version:
@@ -182,7 +183,7 @@ func main() {
 You need to install the SQLite driver for Go. Use `go get` to install it:
 
 ```sh
-go get github.com/mattn/go-sqlite3
+go install github.com/mattn/go-sqlite3@latest
 ```
 
 ### 5. Run the Go Server
@@ -193,7 +194,7 @@ You can now run your Go server:
 go run main.go
 ```
 
-The server will start, and you can access it by navigating to `http://localhost:8080` in a browser or using `curl`:
+The server will start please wait for atleast 5 mins, and you can access it by navigating to `http://localhost:8080` in a browser or using `curl`:
 
 ```sh
 curl http://localhost:8080
