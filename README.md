@@ -438,3 +438,17 @@ git clone git@github.com:username/repo.git
 
 This should resolve the issue with the key format and allow you to authenticate with GitHub using SSH.
 
+Update Your Git Remote URL to Use SSH:
+```bash
+git remote set-url origin git@github.com:username/repository.git
+```
+
+## To push changes to github
+
+Replace username with your GitHub username and repository with your repository name.Push Your Changes:
+```bash
+git add .
+git commit -m "comment"
+git push origin
+```
+mainSince SSH keys are used, you won’t be prompted for a password.
