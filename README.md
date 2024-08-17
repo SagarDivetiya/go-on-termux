@@ -126,57 +126,86 @@ Add the following code to create a simple HTTP server:
 package main
 
 import (
-    "database/sql"
-    "fmt"
-    "log"
-    "net/http"
+    "database/sql"      // Package to work with SQL databases.
+    "fmt"               // Package for formatted I/O operations.
+    "log"               // Package for logging errors and other information.
+    "net/http"          // Package to create HTTP servers.
 
-    _ "github.com/mattn/go-sqlite3"
+    _ "github.com/mattn/go-sqlite3" // SQLite driver for Go's database/sql package. 
+                                    // The underscore means the package is imported for its side effects only 
+                                    // (initialization) and not directly used in the code.
 )
 
 func main() {
-    // Initialize SQLite database
+    // Initialize SQLite database connection. If the database doesn't exist, it will be created.
     db, err := sql.Open("sqlite3", "./test.db")
     if err != nil {
-        log.Fatal(err)
+        log.Fatal(err) // Log and exit if there is an error opening the database.
     }
-    defer db.Close()
+    defer db.Close() // Ensure the database connection is closed when the main function exits.
 
-    // Create a simple table
+    // SQL command to create a table if it doesn't exist.
     createTableSQL := `CREATE TABLE IF NOT EXISTS users (
-        "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        "name" TEXT
+        "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, // id field is an auto-incrementing primary key.
+        "name" TEXT                                       // name field to store user names.
     );`
+    
+    // Execute the SQL command to create the table.
     _, err = db.Exec(createTableSQL)
     if err != nil {
-        log.Fatal(err)
+        log.Fatal(err) // Log and exit if there is an error creating the table.
     }
 
-    // Insert a user
+    // Insert a sample user "John Doe" into the users table.
     _, err = db.Exec("INSERT INTO users (name) VALUES (?)", "John Doe")
     if err != nil {
-        log.Fatal(err)
+        log.Fatal(err) // Log and exit if there is an error inserting the user.
     }
 
-    // Simple HTTP handler
+    // Set up a simple HTTP handler for the root URL "/".
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        // Query the database to retrieve all user names.
         rows, err := db.Query("SELECT name FROM users")
         if err != nil {
-            log.Fatal(err)
+            log.Fatal(err) // Log and exit if there is an error querying the database.
         }
-        defer rows.Close()
+        defer rows.Close() // Ensure that the rows are closed after the function finishes.
 
+        // Loop through the result set and print each user's name to the HTTP response.
         for rows.Next() {
             var name string
-            rows.Scan(&name)
-            fmt.Fprintf(w, "User: %s\n", name)
+            rows.Scan(&name) // Scan the name field from the current row.
+            fmt.Fprintf(w, "User: %s\n", name) // Write the user's name to the HTTP response.
         }
     })
 
+    // Print a message to the console indicating the server has started.
     fmt.Println("Server started at http://localhost:8080")
+
+    // Start the HTTP server on port 8080 and log any errors that occur.
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
 ```
+The statement `defer rows.Close()` is used to ensure that the resources associated with the `rows` object (which represents the result set from a database query) are properly released when they are no longer needed. Here’s why it's important:
+
+### 1. **Resource Management**:
+   - When you execute a query that returns rows, the database driver allocates resources such as memory and potentially network connections to fetch and hold the data.
+   - `rows.Close()` frees these resources. If you don't close the `rows` object, those resources remain allocated until the program terminates, which could lead to memory leaks or other resource exhaustion issues in long-running applications.
+
+### 2. **Preventing Deadlocks**:
+   - In some database systems, if you don’t close a `rows` object, the database might keep locks on certain resources (like tables or rows). This can prevent other queries from running, leading to deadlocks or performance issues.
+
+### 3. **Deferred Execution**:
+   - Using `defer` ensures that `rows.Close()` is called as soon as the enclosing function (`http.HandleFunc` in this case) returns, even if the function encounters an error or a return statement earlier in the code.
+   - This is especially useful in scenarios with multiple return paths because you don’t have to explicitly call `rows.Close()` in each path. It simplifies the code and reduces the risk of forgetting to release resources.
+
+### 4. **Code Readability**:
+   - Placing `defer rows.Close()` right after `db.Query(...)` makes it clear that the rows are being managed and will be cleaned up when done. It provides a clear indication to anyone reading the code that resource management is handled.
+
+### Example Without `defer`:
+If you didn’t use `defer`, you’d have to remember to call `rows.Close()` manually at every point where the function might return. This increases the risk of overlooking it, which could lead to the aforementioned problems.
+
+In summary, `defer rows.Close()` is a best practice to ensure that your program efficiently manages resources and remains stable, even if unexpected errors occur or the function has multiple exit points.
 
 ### 4. Install SQLite Driver for Go
 
