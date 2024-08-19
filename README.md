@@ -345,6 +345,17 @@ error: src refspec main does not match any
 
 This error usually means that the branch `main` does not exist in your local repository. Here are a few steps to troubleshoot and resolve this issue:
 
+Fetch the latest changes from the remote repository:
+```
+git fetch origin
+```
+
+Merge the changes into your local branch:
+```
+git merge origin/main
+```
+Replace main with the name of your branch if it’s different.
+
 1. **Check your current branch**:
    ```bash
    git branch
